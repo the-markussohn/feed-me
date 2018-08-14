@@ -1,0 +1,8 @@
+<div>
+  <label>Product Search:
+    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
+  </label>
+  <ul>
+    <li *ngFor="let product of products | async">{{product.id}} : {{product.name}}</li>
+  </ul>
+</div>
