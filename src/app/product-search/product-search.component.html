@@ -3,6 +3,6 @@
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
   </label>
   <ul>
-    <li *ngFor="let product of products | async">{{product.id}} : {{product.name}}</li>
+    <li *ngFor="let commonProduct of (productData$ | async)?.common">{{commonProduct.tag_id}} : {{commonProduct.food_name}}</li>
   </ul>
 </div>
