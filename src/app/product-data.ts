@@ -1,4 +1,5 @@
+import {CommonProduct} from './common-product';
+
 export interface ProductData {
-  branded: any[];
-  common: any[];
+  common: CommonProduct[];
 }

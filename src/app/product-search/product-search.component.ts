@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../product.service';
 import {Observable, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
 import {ProductData} from '../product-data';
+import {Food, NutrientData} from '../nutrient-data';
+import {Product} from '../product';
 
 @Component({
   selector: 'app-product-search',
@@ -12,9 +14,13 @@ import {ProductData} from '../product-data';
 export class ProductSearchComponent implements OnInit {
 
   productData$: Observable<ProductData>;
+  nutrientData: NutrientData;
+  products: Product[];
+
   private searchTerms = new Subject<string>();
 
   constructor(private productService: ProductService) {
+    this.products = [];
   }
 
   ngOnInit() {
@@ -29,4 +35,30 @@ export class ProductSearchComponent implements OnInit {
     this.searchTerms.next(term);
   }
 
+  add(foodName: string): void {
+    this.productService.getNutrients(foodName).subscribe(
+      data => {
+        this.nutrientData = data;
+        this.extractData(this.nutrientData.foods).map(product => this.products.push(product));
+      }
+    );
+  }
+
+  delete(product: Product): void {
+    this.products = this.products.filter(p => p !== product);
+  }
+
+  private extractData(foods: Food[]): Product[] {
+    return foods.map(food => {
+      const product = new Product();
+      product.name = food.food_name;
+      product.calories = food.nf_calories;
+      product.caloriesWeight = food.serving_weight_grams;
+      product.carbs = food.nf_total_carbohydrate;
+      product.protein = food.nf_protein;
+      product.fat = food.nf_protein;
+      console.log(`returned ${JSON.stringify(product)}`);
+      return product;
+    });
+  }
 }
