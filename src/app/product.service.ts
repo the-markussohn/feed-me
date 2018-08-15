@@ -4,8 +4,7 @@ import {environment} from '../environments/environment';
 import {ProductData} from './product-data';
 import {Observable, of} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
-import {Food, NutrientData} from './nutrient-data';
-import {Product} from './product';
+import {NutrientData} from './nutrient-data';
 
 const httpOptions = {
   headers: new HttpHeaders({

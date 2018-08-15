@@ -1,28 +1,25 @@
-<div>
-  <label>Product Search:
-    <input #searchBox id="search-box" (keyup)="search(searchBox.value)"/>
-  </label>
-  <ul>
-    <li *ngFor="let commonProduct of (productData$ | async)?.common">
-      <a routerLink="">
+<div class="col-12">
+  <div class="input-group col-6 col-offset-6">
+    <input #searchBox id="search-box" (keyup)="search(searchBox.value)" class="form-control"
+           placeholder="Search for products"/>
+  </div>
+  <div class="col-6 col-offset-6">
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let commonProduct of (productData$ | async)?.common"
+          (click)="add(commonProduct.food_name); searchBox.value=''; search(searchBox.value)">
         <img src="{{commonProduct.photo.thumb}}" alt="">
         {{commonProduct.food_name}}
-      </a>
-      <button (click)="add(commonProduct.food_name)">Add</button>
-    </li>
-  </ul>
-</div>
-
-<div *ngIf="products.length">
-
-  <h4>Selected ingredients</h4>
-
-  <ul class="list-group">
-    <li *ngFor="let product of products">
-      <span><img src="{{product.img}}"></span>
-      <span>{{product.name}} {{product.calories}}</span>
-      <button (click)="delete(product)">X</button>
-    </li>
-  </ul>
-
+      </li>
+    </ul>
+  </div>
+  <div *ngIf="products.length">
+    <h4>Selected ingredients</h4>
+    <ul class="list-group">
+      <li *ngFor="let product of products" class="list-group-item">
+        <span><img src="{{product.img}}"></span>
+        <span>{{product.name}} {{product.calories}}</span>
+        <button (click)="delete(product)">X</button>
+      </li>
+    </ul>
+  </div>
 </div>
