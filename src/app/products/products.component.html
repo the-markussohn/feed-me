@@ -1,10 +1,10 @@
-<div *ngIf="products.length">
+<div *ngIf="productNames.length">
   <h4>Selected ingredients</h4>
   <ul class="list-group">
-    <li *ngFor="let product of products" class="list-group-item">
-      <span>{{product.name}} {{product.calories}}</span>
-      <button (click)="delete(product)">X</button>
+    <li *ngFor="let name of productNames" class="list-group-item">
+      <span>{{name}}</span>
+      <button (click)="delete(name)">X</button>
     </li>
   </ul>
-  <a routerLink="/recipe/create"><button class="btn btn-success">Create recipe</button></a>
+  <a routerLink="/recipe/create"><button class="btn btn-success" (click)="sendIngredients()">Create recipe</button></a>
 </div>

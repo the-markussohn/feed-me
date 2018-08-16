@@ -1,3 +1,5 @@
-<p>
-  recipe works!
-</p>
+<div *ngIf="empty()">
+  <ul>
+    <li *ngFor="let ingredient of ingredients">{{ingredient | json}}</li>
+  </ul>
+</div>

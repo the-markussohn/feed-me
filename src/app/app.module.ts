@@ -1,12 +1,12 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { ProductSearchComponent } from './product-search/product-search.component';
-import { AppRoutingModule } from './app-routing.module';
+import {AppComponent} from './app.component';
+import {ProductSearchComponent} from './product-search/product-search.component';
+import {AppRoutingModule} from './app-routing.module';
 import {HttpClientModule} from '@angular/common/http';
-import { ProductsComponent } from './products/products.component';
-import { RecipeComponent } from './recipe/recipe.component';
+import {ProductsComponent} from './products/products.component';
+import {RecipeComponent} from './recipe/recipe.component';
 
 @NgModule({
   declarations: [
@@ -23,4 +23,5 @@ import { RecipeComponent } from './recipe/recipe.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
