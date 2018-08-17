@@ -12,30 +12,23 @@ import {ProductService} from '../product.service';
 export class RecipeComponent implements OnInit {
 
   ingredients: Product[];
-  names: string[];
   nutrientData: NutrientData;
 
   constructor(private productService: ProductService,
               private router: Router,
               private route: ActivatedRoute) {
+    this.ingredients = [];
   }
 
   ngOnInit() {
-    this.route.params.forEach((params: Params) => {
-      this.names = params['ingredients'];
+    this.route.queryParamMap.subscribe(params => {
+      params.getAll('ingredients').map(name => {
+        this.productService.getNutrients(name).subscribe(res => {
+          this.nutrientData = res;
+          this.extractData(this.nutrientData.foods).map(product => this.ingredients.push(product));
+        });
+      });
     });
-    console.log(this.names);
-    /*this.route.params.subscribe(params => {
-      for (let foodName in params) {
-        this.productService.getNutrients(foodName).subscribe(
-          data => {
-            this.nutrientData = data;
-            this.extractData(this.nutrientData.foods).map(product => this.ingredients.push(product));
-            console.log(JSON.stringify(this.ingredients));
-          }
-        );
-      }
-    });*/
   }
 
   empty(): void {
@@ -45,7 +38,7 @@ export class RecipeComponent implements OnInit {
   }
 
   home(): void {
-    this.router.navigateByUrl('');
+    this.router.navigateByUrl('/products');
     console.log('empty list. Redirected');
   }
 

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {ProductService} from '../product.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -11,8 +10,7 @@ export class ProductsComponent implements OnInit {
 
   productNames: string[];
 
-  constructor(private productService: ProductService,
-              private router: Router) {
+  constructor(private router: Router) {
     this.productNames = [];
   }
 
@@ -23,11 +21,11 @@ export class ProductsComponent implements OnInit {
     this.productNames.push(foodName);
   }
 
-  sendIngredients(): void {
-    this.router.navigate(['/recipe/new', {'ingredients': this.productNames}]);
-  }
-
   delete(name: string) {
     this.productNames = this.productNames.filter(p => p !== name);
+  }
+
+  createRecipe(): void {
+    this.router.navigate(['recipe/create'], {queryParams: {'ingredients': this.productNames}});
   }
 }
