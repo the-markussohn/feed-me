@@ -1,9 +1,9 @@
-<div *ngIf="productNames.length">
+<div *ngIf="products && products.length > 0">
   <h4>Selected ingredients</h4>
   <ul class="list-group">
-    <li *ngFor="let name of productNames" class="list-group-item">
-      <span>{{name}}</span>
-      <button (click)="delete(name)">X</button>
+    <li *ngFor="let product of products" class="list-group-item">
+      <span>{{product.name}}</span>
+      <button (click)="delete(product.name)">X</button>
     </li>
   </ul>
   <button class="btn btn-success" (click)="createRecipe()">Create recipe</button>

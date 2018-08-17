@@ -1,5 +1,7 @@
-<div *ngIf="ingredients">
+<div *ngIf="ingredients && ingredients.length">
   <ul>
     <li *ngFor="let ingredient of ingredients">{{ingredient | json}}</li>
   </ul>
+  <button (click)="goBack()">Back</button>
+  <button (click)="save()">Save</button>
 </div>
