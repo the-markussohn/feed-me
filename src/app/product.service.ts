@@ -22,46 +22,46 @@ export class ProductService {
 
   private searchApiUrl = 'https://trackapi.nutritionix.com/v2/search/instant';
   private nutrientApiUrl = 'https://trackapi.nutritionix.com/v2/natural/nutrients';
-  private productEventSource = new Subject<Product>();
+  private ingredientsSource = new Subject<Product>();
 
-  productNames: string[];
-  ingredients: Product[];
+  ingredientsCache: Product[];
 
-  productEvent$ = this.productEventSource;
+  ingredientEvent$ = this.ingredientsSource.asObservable();
+  productList$ = new Observable<Product>((ob) => {
+    console.log('productList$ started');
+    if (this.ingredientsCache) {
+      this.ingredientsCache.forEach(i => ob.next(i));
+    }
+    ob.complete();
+    console.log('productList$ completed');
+  });
 
   constructor(private http: HttpClient) {
   }
 
-  addProductName(productName: string): void {
-    if (!this.productNames) {
-      this.productNames = [];
-    }
-    this.productNames.push(productName);
-    if (!this.ingredients) {
-      this.ingredients = [];
-    }
+  setIngredients(products: Product[]) {
+    this.ingredientsCache = products;
+  }
+
+  addIngredient(productName: string): void {
+    let products: Product[] = [];
     this.getNutrients(productName).subscribe(
-      nutrientData => this.extractData(nutrientData.foods),
-      catchError(this.handleError('addProductName')),
+      nutrientData => {
+        products = this.extractData(nutrientData.foods);
+      },
+      catchError(this.handleError('addIngredient')),
       () => {
-        this.productEventSource.next(this.ingredients[this.ingredients.length - 1]);
-        console.log(`added ${this.ingredients[this.ingredients.length - 1].name}`);
+        products.forEach((product: Product) => {
+          this.ingredientsSource.next(product);
+          console.log(`added ${product.name}`);
+        });
       }
     );
   }
 
-  getIngredients(): Observable<Product[]> {
-    if (!this.ingredients) {
-      return of([]);
-    }
-    return of(this.ingredients);
-  }
-
-  delete(ingredient: Product | string): Observable<Product[]> {
+  delete(ingredient: Product | string): void {
     const name = typeof ingredient === 'string' ? ingredient : ingredient.name;
-    this.productNames = this.productNames.filter(pn => pn !== name);
-    this.ingredients = this.ingredients.filter(i => i.name !== name);
-    return of(this.ingredients);
+    this.ingredientsCache = this.ingredientsCache.filter(i => i.name !== name);
   }
 
   searchProducts(term: string) {
@@ -75,7 +75,7 @@ export class ProductService {
     );
   }
 
-  getNutrients(query: string) {
+  getNutrients(query: string): Observable<NutrientData> {
     return this.http.post<NutrientData>(this.nutrientApiUrl, {query: query}, httpOptions).pipe(
       tap(_ => console.log(`nutrients data received: ${_.foods.length}`)),
       catchError(this.handleError<NutrientData>('getNutrients', {} as NutrientData))
@@ -83,12 +83,11 @@ export class ProductService {
   }
 
   clear(): void {
-    this.productNames = [];
-    this.ingredients = [];
+    this.ingredientsCache = [];
   }
 
-  private extractData(foods: Food[]): void {
-    foods.map(food => {
+  private extractData(foods: Food[]): Product[] {
+    return foods.map<Product>((food: Food) => {
       const product = new Product();
       product.name = food.food_name;
       product.calories = food.nf_calories;
@@ -96,7 +95,7 @@ export class ProductService {
       product.carbs = food.nf_total_carbohydrate;
       product.protein = food.nf_protein;
       product.fat = food.nf_protein;
-      this.ingredients.push(product);
+      return product;
     });
   }
 
