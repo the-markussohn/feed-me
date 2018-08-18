@@ -90,13 +90,17 @@ export class ProductService {
     return foods.map<Product>((food: Food) => {
       const product = new Product();
       product.name = food.food_name;
-      product.calories = food.nf_calories;
-      product.caloriesWeight = food.serving_weight_grams;
-      product.carbs = food.nf_total_carbohydrate;
-      product.protein = food.nf_protein;
-      product.fat = food.nf_protein;
+      product.calories = this.standard(food.nf_calories, food.serving_weight_grams);
+      product.caloriesWeight = 100;
+      product.carbs = this.standard(food.nf_total_carbohydrate, food.serving_weight_grams);
+      product.protein = this.standard(food.nf_protein, food.serving_weight_grams);
+      product.fat = this.standard(food.nf_total_fat, food.serving_weight_grams);
       return product;
     });
+  }
+
+  private standard(value: number, weight: number): number {
+    return value * 100 / weight;
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
